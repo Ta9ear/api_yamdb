@@ -10,7 +10,9 @@ class Titles(models.Model):
     rating = models.IntegerField(verbose_name='Rating of the creation')
     description = models.TextField(
         max_length=1024,
-        verbose_name='Description of the creation'
+        verbose_name='Description of the creation',
+        blank=True,
+        null=True
     )
     genre = models.ManyToManyField(
         'Genres',
