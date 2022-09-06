@@ -18,10 +18,10 @@ class Review(models.Model):
     text = models.TextField()
     score = models.IntegerField(
         verbose_name='Rating',
-        validators=[
+        validators=(
             MinValueValidator[0],
             MaxValueValidator[10],
-        ])
+        ))
     pub_date = models.DateTimeField(
         verbose_name='Date of publication',
         auto_now_add=True
