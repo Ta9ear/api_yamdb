@@ -5,11 +5,12 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class Review(models.Model):
     title = models.ForeignKey(
         Titles,
-        verbose_name='Произведения',
+        verbose_name='Productions',
         on_delete=models.CASCADE,
         related_name='review',
     )
     author = models.ForeignKey(
+        User,
         verbose_name='Author',
         on_delete=models.CASCADE,
         related_name='review'
