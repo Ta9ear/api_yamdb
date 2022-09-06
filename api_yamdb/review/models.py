@@ -31,3 +31,26 @@ class Review(models.Model):
         ordering = ['pub_date']
         verbose_name = 'Review'
         verbose_name_plural = 'Reviews'
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+    review = models.ForeignKey(
+        Review,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+    text = models.TextField()
+    pub_date = models.DateTimeField(
+        verbose_name='Date of publication',
+        auto_now_add=True
+    )
+
+    class Meta:
+        ordering = ['pub_date']
+        verbose_name = 'Review'
+        verbose_name_plural = 'Reviews'
