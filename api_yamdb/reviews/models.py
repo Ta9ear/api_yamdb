@@ -7,7 +7,6 @@ class Titles(models.Model):
         verbose_name='Name of the creation'
     )
     year = models.IntegerField(verbose_name='Create year')
-    rating = models.IntegerField(verbose_name='Rating of the creation')
     description = models.TextField(
         max_length=1024,
         verbose_name='Description of the creation',
