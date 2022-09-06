@@ -7,23 +7,27 @@ class Review(models.Model):
         Titles,
         verbose_name='Productions',
         on_delete=models.CASCADE,
-        related_name='review',
+        related_name='Review',
     )
     author = models.ForeignKey(
         User,
         verbose_name='Author',
         on_delete=models.CASCADE,
-        related_name='review'
+        related_name='Review'
     )
     text = models.TextField()
-    raiting = models.FloatField(
+    score = models.IntegerField(
         verbose_name='Rating',
         validators=[
-            MinValueValidator(0.0),
-            MaxValueValidator(10.0),
+            MinValueValidator[0],
+            MaxValueValidator[10],
         ])
+    pub_date = models.DateTimeField(
+        verbose_name='Date of publication',
+        auto_now_add=True
+    )
 
     class Meta:
         ordering = ['pub_date']
-        verbose_name = 'Comment'
-        verbose_name_plural = 'Comments'
+        verbose_name = 'Review'
+        verbose_name_plural = 'Reviews'
