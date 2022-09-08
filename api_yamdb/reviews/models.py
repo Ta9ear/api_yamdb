@@ -1,4 +1,6 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import UniqueConstraint
 
 
 class Titles(models.Model):
@@ -7,10 +9,11 @@ class Titles(models.Model):
         verbose_name='Name of the creation'
     )
     year = models.IntegerField(verbose_name='Create year')
-    rating = models.IntegerField(verbose_name='Rating of the creation')
     description = models.TextField(
         max_length=1024,
-        verbose_name='Description of the creation'
+        verbose_name='Description of the creation',
+        blank=True,
+        null=True
     )
     genre = models.ManyToManyField(
         'Genres',
@@ -20,7 +23,8 @@ class Titles(models.Model):
         'Categories',
         on_delete=models.SET_NULL,
         related_name='category',
-        verbose_name='Category of the creation'
+        verbose_name='Category of the creation',
+        null=True
     )
 
     def __str__(self):
@@ -65,3 +69,60 @@ class TitleGenre(models.Model):
         Returns title and genre names
         """
         return f'{self.title} {self.genre}'
+
+
+class Review(models.Model):
+    title = models.ForeignKey(
+        Titles,
+        verbose_name='Productions',
+        on_delete=models.CASCADE,
+        related_name='reviews',
+    )
+    author = models.ForeignKey(
+        User,
+        verbose_name='Author',
+        on_delete=models.CASCADE,
+        related_name='reviews'
+    )
+    text = models.TextField()
+    score = models.IntegerField(
+        verbose_name='Rating',
+        validators=[
+            MinValueValidator(0),
+            MaxValueValidator(10),
+        ])
+    pub_date = models.DateTimeField(
+        verbose_name='Date of publication',
+        auto_now_add=True
+    )
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=['author', 'title'], name='rating_once'),
+        ]
+        ordering = ['pub_date']
+        verbose_name = 'Review'
+        verbose_name_plural = 'Reviews'
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+    review = models.ForeignKey(
+        Review,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+    text = models.TextField()
+    pub_date = models.DateTimeField(
+        verbose_name='Date of publication',
+        auto_now_add=True
+    )
+
+    class Meta:
+        ordering = ['pub_date']
+        verbose_name = 'Comment'
+        verbose_name_plural = 'Comments'
