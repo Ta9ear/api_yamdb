@@ -100,7 +100,7 @@ class Review(models.Model):
         constraints = [
             UniqueConstraint(fields=['author', 'title'], name='rating_once'),
         ]
-        ordering = ['pub_date']
+        ordering = ['-pub_date']
         verbose_name = 'Review'
         verbose_name_plural = 'Reviews'
 
@@ -123,6 +123,6 @@ class Comment(models.Model):
     )
 
     class Meta:
-        ordering = ['pub_date']
+        ordering = ['-pub_date']
         verbose_name = 'Comment'
         verbose_name_plural = 'Comments'
