@@ -1,14 +1,15 @@
 from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import ValidationError
 from django.db import models
+
+ROLE_CHOICES = (
+    ('user', 'user'),
+    ('moderator', 'moderator'),
+    ('admin', 'admin'),
+)
 
 
 class User(AbstractUser):
-    ROLE_CHOICES = (
-        ('user', 'user'),
-        ('moderator', 'moderator'),
-        ('admin', 'admin'),
-    )
+
     username = models.CharField(verbose_name='username',
                                 max_length=150,
                                 unique=True)
@@ -25,10 +26,11 @@ class User(AbstractUser):
     email = models.EmailField(verbose_name='email',
                               max_length=254,
                               unique=True)
+    password = None
 
     def clean(self, *args, **kwargs) -> None:
-        if self.is_superuser and self.role != 'admin':
-            raise ValidationError('superuser must be admin!')
+        if self.is_superuser:
+            self.role = 'admin'
         return super().clean(**args, **kwargs)
 
     def save(self, *args, **kwargs) -> None:
