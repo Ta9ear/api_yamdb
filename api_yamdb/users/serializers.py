@@ -8,17 +8,15 @@ class SignupSerializer(serializers.ModelSerializer):
         model = User
         fields = ('username', 'email')
 
-    def validate_username(value):
+    def validate_username(self, value):
         if value == 'me':
             raise serializers.ValidationError('You can\'t use this username!')
+        return value
 
 
-class TokenObtainSerializer(serializers.ModelSerializer):
+class TokenObtainSerializer(serializers.Serializer):
     confirmation_code = serializers.CharField(max_length=150, write_only=True)
-
-    class Meta:
-        model = User
-        fields = ('username', 'confirmation_code')
+    username = serializers.CharField(max_length=150, write_only=True)
 
 
 class UserManageSerializer(serializers.ModelSerializer):
@@ -36,9 +34,10 @@ class UserManageSerializer(serializers.ModelSerializer):
                   'last_name',
                   'bio')
 
-    def validate_username(value):
+    def validate_username(self, value):
         if value == 'me':
             raise serializers.ValidationError('You can\'t use this username!')
+        return value
 
 
 class SelfUserSerializer(serializers.ModelSerializer):
@@ -56,6 +55,7 @@ class SelfUserSerializer(serializers.ModelSerializer):
                   'last_name',
                   'bio')
 
-    def validate_username(value):
+    def validate_username(self, value):
         if value == 'me':
             raise serializers.ValidationError('You can\'t use this username!')
+        return value

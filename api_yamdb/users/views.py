@@ -1,10 +1,8 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import action, api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .mixins import RetrieveUpdateViewSet
 from .models import User
 from .permissions import IsAdmin
 from .serializers import (SelfUserSerializer, SignupSerializer,
@@ -27,12 +25,12 @@ def activate(request):
     """Функция для активации учетной записи и предоставления токена."""
     serializer = TokenObtainSerializer(data=request.data)
     if serializer.is_valid():
-        username = serializer.data['username']
-        code = serializer.data['confirmation_code']
+        username = serializer.validated_data['username']
+        code = serializer.validated_data['confirmation_code']
         try:
             user = User.objects.get(username=username)
             account_activation_token.check_token(user, code)
-        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
         if user is None:
             return Response(
@@ -42,6 +40,7 @@ def activate(request):
         user.save()
         token = get_tokens_for_user(user)
         return Response(token, status=status.HTTP_200_OK)
+    return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -53,18 +52,17 @@ class UserViewSet(viewsets.ModelViewSet):
         create_user(serializer)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class SelfUserViewset(RetrieveUpdateViewSet):
-    serializer_class = SelfUserSerializer
-    queryset = User.objects.all()
-    permission_classes = [IsAuthenticated, ]
-
-    def retrieve(self, request):
-        user = get_object_or_404(self.queryset, user=request.user)
+    @action(detail=False, methods=['GET', 'PATCH'],
+            permission_classes=[IsAuthenticated, ])
+    def me(self, request):
+        user = User.objects.get(username=request.user)
+        if request.method == 'PATCH':
+            serializer = SelfUserSerializer(user,
+                                            data=request.data,
+                                            partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
         serializer = SelfUserSerializer(user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def update(self, request):
-        user = get_object_or_404(self.queryset, user=request.user)
-        serializer = SelfUserSerializer(user)
-        serializer.save(role=request.user.role)
+        return Response(serializer.data)

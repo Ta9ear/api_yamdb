@@ -31,7 +31,7 @@ class User(AbstractUser):
     def clean(self, *args, **kwargs) -> None:
         if self.is_superuser:
             self.role = 'admin'
-        return super().clean(**args, **kwargs)
+        return super().clean(*args, **kwargs)
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
