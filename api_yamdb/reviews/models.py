@@ -2,6 +2,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import UniqueConstraint
 
+from users.models import User
+
 
 class Titles(models.Model):
     name = models.CharField(
@@ -25,7 +27,6 @@ class Titles(models.Model):
         null=True,
         related_name='category',
         verbose_name='Category of the creation',
-        null=True
     )
 
     def __str__(self):
