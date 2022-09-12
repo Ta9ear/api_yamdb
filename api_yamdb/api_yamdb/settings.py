@@ -23,8 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'api',
-    'api_yamdb',
+    'rest_framework.authtoken',
     'reviews.apps.ReviewsConfig',
     'api.apps.ApiConfig',
     'django_filters',
@@ -73,9 +72,26 @@ DATABASES = {
 }
 
 # Custom Authentification
+AUTH_USER_MODEL = 'users.User'
+
 
 AUTH_USER_MODEL = 'users.User'
 
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
 # Password validation
 
 AUTH_PASSWORD_VALIDATORS = [
