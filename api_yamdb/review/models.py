@@ -7,13 +7,13 @@ class Review(models.Model):
         Titles,
         verbose_name='Productions',
         on_delete=models.CASCADE,
-        related_name='Review',
+        related_name='reviews',
     )
     author = models.ForeignKey(
         User,
         verbose_name='Author',
         on_delete=models.CASCADE,
-        related_name='Review'
+        related_name='reviews'
     )
     text = models.TextField()
     score = models.IntegerField(
