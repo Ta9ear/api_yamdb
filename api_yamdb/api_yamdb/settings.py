@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'reviews.apps.ReviewsConfig',
     'api.apps.ApiConfig',
+    'django_filters',
     'users',
 ]
 
@@ -71,6 +72,8 @@ DATABASES = {
 }
 
 # Custom Authentification
+AUTH_USER_MODEL = 'users.User'
+
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -125,3 +128,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5
+}
