@@ -1,4 +1,3 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 ROLE_CHOICES = (
@@ -32,6 +31,7 @@ class User(AbstractUser):
         if self.is_superuser:
             self.role = 'admin'
         return super().clean(*args, **kwargs)
+
 
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
