@@ -1,6 +1,7 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import UniqueConstraint
+from users.models import User
 
 
 class Titles(models.Model):
@@ -24,8 +25,7 @@ class Titles(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         related_name='category',
-        verbose_name='Category of the creation',
-        null=True
+        verbose_name='Category of the creation'
     )
 
     def __str__(self):
