@@ -48,6 +48,12 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class GenresSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(
+        validators=[UniqueValidator(queryset=Genres.objects.all())]
+    )
+    slug = serializers.CharField(
+        validators=[UniqueValidator(queryset=Genres.objects.all())]
+    )
 
     class Meta:
         model = Genres
@@ -55,6 +61,12 @@ class GenresSerializer(serializers.ModelSerializer):
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(
+        validators=[UniqueValidator(queryset=Categories.objects.all())]
+    )
+    slug = serializers.CharField(
+        validators=[UniqueValidator(queryset=Categories.objects.all())]
+    )
 
     class Meta:
         model = Categories
