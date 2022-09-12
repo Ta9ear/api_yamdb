@@ -25,6 +25,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'api_yamdb',
+    'reviews.apps.ReviewsConfig',
+    'api.apps.ApiConfig',
+    'django_filters',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +72,9 @@ DATABASES = {
     }
 }
 
+# Custom Authentification
+
+AUTH_USER_MODEL = 'users.User'
 
 # Password validation
 
@@ -119,4 +126,7 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
     'AUTH_HEADER_TYPES': ('Bearer',),
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5
 }
