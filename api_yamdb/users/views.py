@@ -15,16 +15,17 @@ from .utils import create_user
 def sign_up(request):
     """Функция для создания учетной записи. Под конец отправляет письмо."""
     serializer = SignupSerializer(data=request.data)
-    if serializer.is_valid():
+    if serializer.is_valid(raise_exception=True):
         create_user(serializer)
         return Response(request.data, status=status.HTTP_200_OK)
+    return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST', ])
 def activate(request):
     """Функция для активации учетной записи и предоставления токена."""
     serializer = TokenObtainSerializer(data=request.data)
-    if serializer.is_valid():
+    if serializer.is_valid(raise_exception=True):
         username = serializer.validated_data['username']
         code = serializer.validated_data['confirmation_code']
         try:
@@ -60,7 +61,7 @@ class UserViewSet(viewsets.ModelViewSet):
             serializer = SelfUserSerializer(user,
                                             data=request.data,
                                             partial=True)
-            if serializer.is_valid():
+            if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response(serializer.data)
             return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)

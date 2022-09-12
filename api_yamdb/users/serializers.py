@@ -3,15 +3,17 @@ from rest_framework import serializers
 from .models import ROLE_CHOICES, User
 
 
-class SignupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'email')
-
+class ValidatedSerializer(serializers.ModelSerializer):
     def validate_username(self, value):
         if value == 'me':
             raise serializers.ValidationError('You can\'t use this username!')
         return value
+
+
+class SignupSerializer(ValidatedSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'email')
 
 
 class TokenObtainSerializer(serializers.Serializer):
@@ -19,7 +21,7 @@ class TokenObtainSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=150, write_only=True)
 
 
-class UserManageSerializer(serializers.ModelSerializer):
+class UserManageSerializer(ValidatedSerializer):
     role = serializers.ChoiceField(choices=ROLE_CHOICES)
     first_name = serializers.CharField(required=False)
     last_name = serializers.CharField(required=False)
@@ -34,13 +36,8 @@ class UserManageSerializer(serializers.ModelSerializer):
                   'last_name',
                   'bio')
 
-    def validate_username(self, value):
-        if value == 'me':
-            raise serializers.ValidationError('You can\'t use this username!')
-        return value
 
-
-class SelfUserSerializer(serializers.ModelSerializer):
+class SelfUserSerializer(ValidatedSerializer):
     role = serializers.ChoiceField(choices=ROLE_CHOICES, read_only=True)
     first_name = serializers.CharField(required=False)
     last_name = serializers.CharField(required=False)
@@ -54,8 +51,3 @@ class SelfUserSerializer(serializers.ModelSerializer):
                   'first_name',
                   'last_name',
                   'bio')
-
-    def validate_username(self, value):
-        if value == 'me':
-            raise serializers.ValidationError('You can\'t use this username!')
-        return value
