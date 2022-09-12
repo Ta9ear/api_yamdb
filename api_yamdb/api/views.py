@@ -38,7 +38,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         return review.comments.all()
 
 
-class TitleViewSet(viewsets.ModelViewSet):
+class TitlesViewSet(viewsets.ModelViewSet):
     queryset = Titles.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitlesFilter
