@@ -22,7 +22,7 @@ class TokenObtainSerializer(serializers.Serializer):
 
 
 class UserManageSerializer(ValidatedSerializer):
-    role = serializers.ChoiceField(choices=ROLE_CHOICES)
+    role = serializers.ChoiceField(choices=ROLE_CHOICES, required=False)
     first_name = serializers.CharField(required=False)
     last_name = serializers.CharField(required=False)
     bio = serializers.CharField(required=False)
