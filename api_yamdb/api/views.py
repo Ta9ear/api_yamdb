@@ -10,13 +10,15 @@ from api.serializers import (CategoriesSerializer, CommentSerializer,
                              GenresSerializer, ReviewSerializer,
                              TitlesReadSerializer, TitlesWriteSerializer)
 
+from django.db.models import Avg
+
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = (IsAdminModeratorAuthorOrReadOnly,)
 
     def perform_create(self, serializer):
-        title = get_object_or_404(Titles, pk=self.kwargs.get('title_id'))
+        title = get_object_or_404(Titles, id=self.kwargs.get('title_id'))
         serializer.save(author=self.request.user, title=title)
 
     def get_queryset(self):
@@ -28,18 +30,22 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = (IsAdminModeratorAuthorOrReadOnly,)
 
-    def perform_create(self, serializer):
-        review_id = self.kwargs.get('review_id')
-        review = get_object_or_404(Review, pk=review_id)
-        serializer.save(author=self.request.user, review=review)
-
     def get_queryset(self):
-        review = get_object_or_404(Review, pk=self.kwargs.get('review_id'))
+        review = get_object_or_404(Review, pk=self.kwargs.get("review_id"))
         return review.comments.all()
+
+    def perform_create(self, serializer):
+        title_id = self.kwargs.get('title_id')
+        review_id = self.kwargs.get('review_id')
+        review = get_object_or_404(Review, id=review_id, title=title_id)
+        serializer.save(author=self.request.user, review=review)
 
 
 class TitlesViewSet(viewsets.ModelViewSet):
-    queryset = Titles.objects.all()
+    queryset = Titles.objects.all().annotate(
+        Avg("reviews__score")
+    ).order_by("name")
+    serializer_class = TitlesReadSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitlesFilter
     permission_classes = (IsAdminOrReadOnly,)

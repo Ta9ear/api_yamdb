@@ -4,6 +4,7 @@ from django.db.models import Avg
 from rest_framework import serializers
 from reviews.models import Comment, Review, Categories, Genres, Titles
 from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
+from rest_framework.response import Response
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -17,19 +18,19 @@ class ReviewSerializer(serializers.ModelSerializer):
         read_only=True,
     )
 
-    class Meta:
-        fields = '__all__'
-        model = Review
-        validators = [UniqueTogetherValidator(queryset=Review.objects.all(),
-                                              fields=['title', 'author'])]
-
     def validate(self, data):
         author = self.context['request'].user
-        if data['author'] == author:
+        if data['title_id'] == author:
             if Review.objects.filter(author=author).exists():
                 raise serializers.ValidationError(
                     'Один отзыв на пользователя к произведению!')
-                return data
+                return Response(id=data)
+
+    class Meta:
+        fields = ('id', 'title', 'author')
+        model = Review
+        validators = [UniqueTogetherValidator(queryset=Review.objects.all(),
+                                              fields=['id', 'title'])]
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -97,7 +98,7 @@ class TitlesWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Titles
-        fields = ('name', 'year', 'description', 'genre', 'category')
+        fields = '__all__'
 
     def validate_year(self, value):
         current_year = dt.date.today().year

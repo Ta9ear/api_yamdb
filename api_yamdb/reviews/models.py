@@ -4,37 +4,6 @@ from django.db.models import UniqueConstraint
 from users.models import User
 
 
-class Titles(models.Model):
-    name = models.CharField(
-        max_length=256,
-        verbose_name='Name of the creation'
-    )
-    year = models.IntegerField(verbose_name='Create year')
-    description = models.TextField(
-        max_length=1024,
-        verbose_name='Description of the creation',
-        blank=True,
-        null=True
-    )
-    genre = models.ManyToManyField(
-        'Genres',
-        through='TitleGenre'
-    )
-    category = models.ForeignKey(
-        'Categories',
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name='category',
-        verbose_name='Category of the creation'
-    )
-
-    def __str__(self):
-        """
-        Returns text of the Titles object
-        """
-        return self.name[:32]
-
-
 class Genres(models.Model):
     name = models.CharField(max_length=256, verbose_name='Genre')
     slug = models.SlugField(
@@ -59,6 +28,40 @@ class Categories(models.Model):
         Returns text of the Categories object
         """
         return self.name[:32]
+
+
+class Titles(models.Model):
+    name = models.CharField(
+        max_length=256,
+        verbose_name='Name of the creation'
+    )
+    year = models.IntegerField(verbose_name='Create year')
+    description = models.TextField(
+        max_length=1024,
+        verbose_name='Description of the creation',
+        blank=True,
+        null=True
+    )
+    genre = models.ManyToManyField(
+        Genres,
+        verbose_name='Genre of the creation',
+        through='TitleGenre'
+    )
+    category = models.ForeignKey(
+        Categories,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='category',
+        verbose_name='Category of the creation'
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'production'
+        verbose_name_plural = 'productions'
+        ordering = ['name']
 
 
 class TitleGenre(models.Model):
