@@ -1,6 +1,6 @@
 import django_filters.rest_framework as d_filters
 
-from reviews.models import Titles
+from reviews.models import Title
 
 
 class TitlesFilter(d_filters.FilterSet):
@@ -16,5 +16,5 @@ class TitlesFilter(d_filters.FilterSet):
     )
 
     class Meta:
-        model = Titles
+        model = Title
         fields = ['name', 'year', 'genre', 'category']
