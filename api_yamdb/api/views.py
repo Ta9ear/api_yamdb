@@ -3,7 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, filters
 from reviews.models import Category, Genre, Review, Title
 
-from api.filters import TitlesFilter
+from api.filters import TitleFilter
 from api.mixins import CreateListDestroyViewSet
 from api.permissions import IsAdminModeratorAuthorOrReadOnly, IsAdminOrReadOnly
 from api.serializers import (CategorySerializer, CommentSerializer,
@@ -41,18 +41,18 @@ class CommentViewSet(viewsets.ModelViewSet):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     filter_backends = (DjangoFilterBackend,)
-    filterset_class = TitlesFilter
+    filterset_class = TitleFilter
     permission_classes = (IsAdminOrReadOnly,)
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
-            return TitlesReadSerializer
-        return TitlesWriteSerializer
+            return TitleReadSerializer
+        return TitleWriteSerializer
 
 
 class GenreViewSet(CreateListDestroyViewSet):
     queryset = Genre.objects.all()
-    serializer_class = GenresSerializer
+    serializer_class = GenreSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     permission_classes = (IsAdminOrReadOnly,)
@@ -61,7 +61,7 @@ class GenreViewSet(CreateListDestroyViewSet):
 
 class CategoryViewSet(CreateListDestroyViewSet):
     queryset = Category.objects.all()
-    serializer_class = CategoriesSerializer
+    serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     permission_classes = (IsAdminOrReadOnly,)
