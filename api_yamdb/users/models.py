@@ -28,6 +28,9 @@ class User(AbstractUser):
                               unique=True)
     password = None
 
+    class Meta:
+        ordering = ['username']
+
     def clean(self, *args, **kwargs) -> None:
         if self.is_superuser:
             self.role = 'admin'
