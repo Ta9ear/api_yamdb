@@ -4,7 +4,7 @@ from django.db.models import UniqueConstraint
 from users.models import User
 
 
-class Titles(models.Model):
+class Title(models.Model):
     name = models.CharField(
         max_length=256,
         verbose_name='Name of the creation'
@@ -17,16 +17,19 @@ class Titles(models.Model):
         null=True
     )
     genre = models.ManyToManyField(
-        'Genres',
+        'Genre',
         through='TitleGenre'
     )
     category = models.ForeignKey(
-        'Categories',
+        'Category',
         on_delete=models.SET_NULL,
         null=True,
         related_name='category',
         verbose_name='Category of the creation'
     )
+
+    class Meta:
+        ordering = ('name',)
 
     def __str__(self):
         """
@@ -35,11 +38,14 @@ class Titles(models.Model):
         return self.name[:32]
 
 
-class Genres(models.Model):
+class Genre(models.Model):
     name = models.CharField(max_length=256, verbose_name='Genre')
     slug = models.SlugField(
         unique=True, max_length=50, verbose_name='Slug of genre'
     )
+
+    class Meta:
+        ordering = ('name',)
 
     def __str__(self):
         """
@@ -48,11 +54,14 @@ class Genres(models.Model):
         return self.name[:32]
 
 
-class Categories(models.Model):
+class Category(models.Model):
     name = models.CharField(max_length=256, verbose_name='Category')
     slug = models.SlugField(
         unique=True, max_length=50, verbose_name='Slug of category'
     )
+
+    class Meta:
+        ordering = ('name',)
 
     def __str__(self):
         """
@@ -62,8 +71,8 @@ class Categories(models.Model):
 
 
 class TitleGenre(models.Model):
-    title = models.ForeignKey(Titles, on_delete=models.CASCADE)
-    genre = models.ForeignKey(Genres, on_delete=models.CASCADE)
+    title = models.ForeignKey(Title, on_delete=models.CASCADE)
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
 
     def __str__(self):
         """
@@ -74,7 +83,7 @@ class TitleGenre(models.Model):
 
 class Review(models.Model):
     title = models.ForeignKey(
-        Titles,
+        Title,
         verbose_name='Productions',
         on_delete=models.CASCADE,
         related_name='reviews',

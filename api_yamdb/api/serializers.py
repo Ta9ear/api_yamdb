@@ -1,16 +1,13 @@
 import datetime as dt
 
 from django.db.models import Avg
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from reviews.models import Comment, Review, Categories, Genres, Titles
-from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
+from reviews.models import Comment, Review, Category, Genre, Title
+from rest_framework.validators import UniqueValidator
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    title = serializers.SlugRelatedField(
-        slug_field='user',
-        read_only=True,
-    )
     author = serializers.SlugRelatedField(
         default=serializers.CurrentUserDefault(),
         slug_field='username',
@@ -18,18 +15,20 @@ class ReviewSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        fields = '__all__'
+        exclude = ('title',)
         model = Review
-        validators = [UniqueTogetherValidator(queryset=Review.objects.all(),
-                                              fields=['title', 'author'])]
 
     def validate(self, data):
-        author = self.context['request'].user
-        if data['author'] == author:
-            if Review.objects.filter(author=author).exists():
-                raise serializers.ValidationError(
-                    'Один отзыв на пользователя к произведению!')
-                return data
+        request = self.context['request']
+        author = request.user
+        title_id = self.context.get('view').kwargs.get('title_id')
+        title = get_object_or_404(Title, pk=title_id)
+        if (
+            request.method == 'POST'
+            and Review.objects.filter(title=title, author=author).exists()
+        ):
+            raise serializers.ValidationError('Review is already exists')
+        return data
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -47,57 +46,56 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
 
 
-class GenresSerializer(serializers.ModelSerializer):
+class GenreSerializer(serializers.ModelSerializer):
     name = serializers.CharField(
-        validators=[UniqueValidator(queryset=Genres.objects.all())]
+        validators=[UniqueValidator(queryset=Genre.objects.all())]
     )
     slug = serializers.CharField(
-        validators=[UniqueValidator(queryset=Genres.objects.all())]
+        validators=[UniqueValidator(queryset=Genre.objects.all())]
     )
 
     class Meta:
-        model = Genres
+        model = Genre
         fields = ('name', 'slug')
 
 
-class CategoriesSerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     name = serializers.CharField(
-        validators=[UniqueValidator(queryset=Categories.objects.all())]
+        validators=[UniqueValidator(queryset=Category.objects.all())]
     )
     slug = serializers.CharField(
-        validators=[UniqueValidator(queryset=Categories.objects.all())]
+        validators=[UniqueValidator(queryset=Category.objects.all())]
     )
 
     class Meta:
-        model = Categories
+        model = Category
         fields = ('name', 'slug')
 
 
-class TitlesReadSerializer(serializers.ModelSerializer):
+class TitleReadSerializer(serializers.ModelSerializer):
     rating = serializers.SerializerMethodField()
-    genre = GenresSerializer(many=True)
-    category = CategoriesSerializer()
+    genre = GenreSerializer(many=True)
+    category = CategorySerializer()
 
     class Meta:
-        model = Titles
-        fields = ('id', 'name', 'year', 'rating',
-                  'description', 'genre', 'category')
+        model = Title
+        fields = '__all__'
 
     def get_rating(self, obj):
         return obj.reviews.aggregate(Avg('score')).get('score__avg')
 
 
-class TitlesWriteSerializer(serializers.ModelSerializer):
+class TitleWriteSerializer(serializers.ModelSerializer):
     genre = serializers.SlugRelatedField(
-        slug_field='slug', many=True, queryset=Genres.objects.all()
+        slug_field='slug', many=True, queryset=Genre.objects.all()
     )
     category = serializers.SlugRelatedField(
-        slug_field='slug', queryset=Categories.objects.all()
+        slug_field='slug', queryset=Category.objects.all()
     )
 
     class Meta:
-        model = Titles
-        fields = ('name', 'year', 'description', 'genre', 'category')
+        model = Title
+        fields = '__all__'
 
     def validate_year(self, value):
         current_year = dt.date.today().year
