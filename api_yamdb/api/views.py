@@ -1,9 +1,9 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
 from reviews.models import Categories, Genres, Review, Titles
 
-from api.filters import CategoriesFilter, GenresFilter, TitlesFilter
+from api.filters import TitlesFilter
 from api.mixins import CreateListDestroyViewSet
 from api.permissions import IsAdminModeratorAuthorOrReadOnly, IsAdminOrReadOnly
 from api.serializers import (CategoriesSerializer, CommentSerializer,
@@ -53,8 +53,8 @@ class TitlesViewSet(viewsets.ModelViewSet):
 class GenresViewSet(CreateListDestroyViewSet):
     queryset = Genres.objects.all()
     serializer_class = GenresSerializer
-    filter_backends = (DjangoFilterBackend,)
-    filterset_class = GenresFilter
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
     permission_classes = (IsAdminOrReadOnly,)
     lookup_field = 'slug'
 
@@ -62,7 +62,7 @@ class GenresViewSet(CreateListDestroyViewSet):
 class CategoriesViewSet(CreateListDestroyViewSet):
     queryset = Categories.objects.all()
     serializer_class = CategoriesSerializer
-    filter_backends = (DjangoFilterBackend,)
-    filterset_class = CategoriesFilter
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
     permission_classes = (IsAdminOrReadOnly,)
     lookup_field = 'slug'

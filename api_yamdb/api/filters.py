@@ -1,6 +1,6 @@
 import django_filters.rest_framework as d_filters
 
-from reviews.models import Categories, Genres, Titles
+from reviews.models import Titles
 
 
 class TitlesFilter(d_filters.FilterSet):
@@ -18,19 +18,3 @@ class TitlesFilter(d_filters.FilterSet):
     class Meta:
         model = Titles
         fields = ['name', 'year', 'genre', 'category']
-
-
-class GenresFilter(d_filters.FilterSet):
-    name = d_filters.CharFilter(field_name='name', lookup_expr='icontains')
-
-    class Meta:
-        model = Genres
-        fields = ['name']
-
-
-class CategoriesFilter(d_filters.FilterSet):
-    name = d_filters.CharFilter(field_name='name', lookup_expr='icontains')
-
-    class Meta:
-        model = Categories
-        fields = ['name']
