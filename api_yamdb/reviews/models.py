@@ -28,6 +28,9 @@ class Title(models.Model):
         verbose_name='Category of the creation'
     )
 
+    class Meta:
+        ordering = ('name',)
+
     def __str__(self):
         """
         Returns text of the Titles object
@@ -41,6 +44,9 @@ class Genre(models.Model):
         unique=True, max_length=50, verbose_name='Slug of genre'
     )
 
+    class Meta:
+        ordering = ('name',)
+
     def __str__(self):
         """
         Returns text of the Genres object
@@ -53,6 +59,9 @@ class Category(models.Model):
     slug = models.SlugField(
         unique=True, max_length=50, verbose_name='Slug of category'
     )
+
+    class Meta:
+        ordering = ('name',)
 
     def __str__(self):
         """
