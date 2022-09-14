@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'django_filters',
     'users',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
