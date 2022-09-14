@@ -17,11 +17,11 @@ class Title(models.Model):
         null=True
     )
     genre = models.ManyToManyField(
-        'Genres',
+        'Genre',
         through='TitleGenre'
     )
     category = models.ForeignKey(
-        'Categories',
+        'Category',
         on_delete=models.SET_NULL,
         null=True,
         related_name='category',
