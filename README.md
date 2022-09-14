@@ -51,7 +51,10 @@ pip install -r requirements.txt
 ### 4)Выполнить миграции:
 python manage.py migrate
 
-### 5)Запустить проект:
+### 5)Загрузить данные из csv-файла:
+python manage.py runscript load_data
+
+### 6)Запустить проект:
 python manage.py runserver
 
 
