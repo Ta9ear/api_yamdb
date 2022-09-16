@@ -5,8 +5,8 @@ from rest_framework.response import Response
 
 from .models import User
 from .permissions import IsAdmin
-from .serializers import (SelfUserSerializer, SignupSerializer,
-                          TokenObtainSerializer, UserManageSerializer)
+from .serializers import (SignupSerializer, TokenObtainSerializer,
+                          UserManageSerializer)
 from .tokens import account_activation_token, get_tokens_for_user
 from .utils import create_user
 
@@ -92,12 +92,12 @@ class UserViewSet(viewsets.ModelViewSet):
     def me(self, request):
         user = User.objects.get(username=request.user)
         if request.method == 'PATCH':
-            serializer = SelfUserSerializer(user,
-                                            data=request.data,
-                                            partial=True)
+            serializer = UserManageSerializer(user,
+                                              data=request.data,
+                                              partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response(serializer.data)
             return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
-        serializer = SelfUserSerializer(user)
+        serializer = UserManageSerializer(user)
         return Response(serializer.data)

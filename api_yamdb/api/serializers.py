@@ -2,8 +2,8 @@ import datetime as dt
 
 from django.db.models import Avg
 from rest_framework import serializers
-from reviews.models import Comment, Review, Categories, Genres, Titles
 from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
+from reviews.models import Categories, Comment, Genres, Review, Titles
 
 
 class ReviewSerializer(serializers.ModelSerializer):
