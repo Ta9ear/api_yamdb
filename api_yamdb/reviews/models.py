@@ -95,7 +95,7 @@ class Review(models.Model):
         related_name='reviews'
     )
     text = models.TextField()
-    score = models.IntegerField(
+    score = models.PositiveSmallIntegerField(
         verbose_name='Rating',
         validators=[
             MinValueValidator(0),
@@ -113,6 +113,12 @@ class Review(models.Model):
         ordering = ['-pub_date']
         verbose_name = 'Review'
         verbose_name_plural = 'Reviews'
+    
+    def __str__(self):
+        """
+        Returns text of the Titles object
+        """
+        return self.name[:32]
 
 
 class Comment(models.Model):
