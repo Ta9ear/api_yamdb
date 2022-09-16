@@ -20,28 +20,35 @@ class User(AbstractUser):
     first_name = models.CharField(
         verbose_name='first_name',
         blank=True,
+        null=True,
+        default=None,
         max_length=150
     )
     last_name = models.CharField(
         verbose_name='last_name',
         max_length=150,
-        blank=True
+        blank=True,
+        null=True,
+        default=None
     )
     bio = models.TextField(
         verbose_name='biograthy',
-        blank=True
+        blank=True,
+        null=True,
+        default=None
     )
     role = models.CharField(
         verbose_name='role',
         max_length=16,
-        choices=ROLE_CHOICES
+        choices=ROLE_CHOICES,
+        default=USER
     )
     email = models.EmailField(
         verbose_name='email',
         max_length=254,
         unique=True
     )
-    password = None    
+    password = None
 
     class Meta:
         ordering = ['username']

@@ -3,8 +3,8 @@ import datetime as dt
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
-from reviews.models import Categories, Comment, Genres, Review, Titles
+from rest_framework.validators import UniqueValidator
+from reviews.models import Category, Comment, Genre, Review, Title
 
 
 class ReviewSerializer(serializers.ModelSerializer):

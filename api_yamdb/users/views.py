@@ -51,41 +51,7 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdmin, ]
     queryset = User.objects.all()
     serializer_class = UserManageSerializer
-
-    def perform_create(self, serializer):
-        if serializer.is_valid(raise_exception=True):
-            if 'role' in serializer.validated_data:
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            else:
-                serializer.save(role='user')
-                return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def retrieve(self, request, pk=None):
-        user = User.objects.get(username=pk)
-        serializer = UserManageSerializer(user)
-        return Response(serializer.data)
-
-    def update(self, request, pk=None):
-        user = User.objects.get(username=pk)
-        serializer = UserManageSerializer(user, data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
-
-    def partial_update(self, request, pk=None):
-        user = User.objects.get(username=pk)
-        serializer = UserManageSerializer(user,
-                                          data=request.data,
-                                          partial=True)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
-
-    def destroy(self, request, pk=None):
-        user = User.objects.get(username=pk)
-        user.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    lookup_field = 'username'
 
     @action(detail=False, methods=['GET', 'PATCH'],
             permission_classes=[IsAuthenticated, ])
@@ -96,7 +62,7 @@ class UserViewSet(viewsets.ModelViewSet):
                                               data=request.data,
                                               partial=True)
             if serializer.is_valid(raise_exception=True):
-                serializer.save()
+                serializer.save(role=request.user.role)
                 return Response(serializer.data)
             return Response('Bad request', status=status.HTTP_400_BAD_REQUEST)
         serializer = UserManageSerializer(user)
