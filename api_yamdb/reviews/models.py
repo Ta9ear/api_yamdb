@@ -113,7 +113,7 @@ class Review(models.Model):
         ordering = ['-pub_date']
         verbose_name = 'Review'
         verbose_name_plural = 'Reviews'
-    
+
     def __str__(self):
         """
         Returns text of the Titles object
