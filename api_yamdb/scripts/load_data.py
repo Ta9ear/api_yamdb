@@ -1,7 +1,7 @@
-from reviews.models import (Category, Genre, Title,
-                            TitleGenre, Review, Comment)
-from users.models import User
 import csv
+
+from reviews.models import Category, Comment, Genre, Review, Title, TitleGenre
+from users.models import User
 
 
 def run():
@@ -29,7 +29,8 @@ def run():
         next(reader)
 
         for row in reader:
-            titles = Title(id=row[0], name=row[1], year=row[2], category_id=row[3])
+            titles = Title(id=row[0], name=row[1],
+                           year=row[2], category_id=row[3])
             titles.save()
 
     with open(f'static/data/{data[3]}') as file:
@@ -37,7 +38,9 @@ def run():
         next(reader)
 
         for row in reader:
-            title_genre = TitleGenre(id=row[0], title_id=row[1], genre_id=row[2])
+            title_genre = TitleGenre(
+                id=row[0], title_id=row[1], genre_id=row[2]
+            )
             title_genre.save()
 
     with open(f'static/data/{data[6]}') as file:
