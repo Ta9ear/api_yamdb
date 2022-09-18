@@ -9,7 +9,7 @@ class Title(models.Model):
         max_length=256,
         verbose_name='Name of the creation'
     )
-    year = models.IntegerField(verbose_name='Create year')
+    year = models.IntegerField(verbose_name='Create year', db_index=True)
     description = models.TextField(
         max_length=1024,
         verbose_name='Description of the creation',
@@ -29,7 +29,8 @@ class Title(models.Model):
     )
 
     class Meta:
-        ordering = ('name',)
+        verbose_name = 'Title'
+        verbose_name_plural = 'Titles'
 
     def __str__(self):
         """
@@ -46,6 +47,8 @@ class Genre(models.Model):
 
     class Meta:
         ordering = ('name',)
+        verbose_name = 'Genre'
+        verbose_name_plural = 'Genres'
 
     def __str__(self):
         """
@@ -62,6 +65,8 @@ class Category(models.Model):
 
     class Meta:
         ordering = ('name',)
+        verbose_name = 'Category'
+        verbose_name_plural = 'Categories'
 
     def __str__(self):
         """
