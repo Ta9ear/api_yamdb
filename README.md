@@ -41,39 +41,48 @@ git clone https://github.com/yandex-praktikum/api_yamdb.git
 cd api_api_yamdb
 
 ### 2)Cоздать и активировать виртуальное окружение:
+```
 python -m venv env
+```
+```
 source venv/bin/activate
-
+```
 ### 3)Установить зависимости из файла requirements.txt:
+```
 python -m pip install --upgrade pip
+```
+```
 pip install -r requirements.txt
-
+```
 ### 4)Выполнить миграции:
+```
 python manage.py migrate
-
+```
 ### 5)Загрузить данные из csv-файла:
+```
 python manage.py runscript load_data
-
+```
 ### 6)Запустить проект:
+```
 python manage.py runserver
-
+```
 
 ## Примеры запросов
 
 GET запрос по адресу ниже выдаст список всех обзоров на произведение с указанным title_id. 
-
+```
 http://127.0.0.1:8000/api/v1/titles/{title_id}/reviews/
-
+```
 POST запрос по этому же адресу добавит еще один обзор. 
-
+```
 {
 "text": "текст обзора",
 "score": 5
 }
-
+```
 GET запрос по адресу ниже выдаст список всех комментариев на обзор с указанным review_id
-
+```
 http://127.0.0.1:8000/api/v1/titles/{title_id}/reviews/{review_id}/comments/
-
+```
 #### Проект находится на стадии разработка. 
 #### Когда выйдет, нам и самим не известно)
