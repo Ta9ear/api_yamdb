@@ -67,3 +67,9 @@ class User(AbstractUser):
         if self.role == 'admin':
             return True
         return False
+
+    @property
+    def is_moderator(self):
+        if self.role == 'moderator':
+            return True
+        return False
