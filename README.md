@@ -30,7 +30,7 @@
 
 ### 1)Клонировать репозиторий и перейти в него в командной строке:
 ```
-git clone https://github.com/yandex-praktikum/api_yamdb.git
+git clone git@github.com:Ta9ear/api_yamdb.git
 ```
 
 ### 2)Cоздать и активировать виртуальное окружение:
